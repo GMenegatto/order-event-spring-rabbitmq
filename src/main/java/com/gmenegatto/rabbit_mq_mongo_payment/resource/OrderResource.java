@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 public class OrderResource {
 
@@ -26,6 +28,7 @@ public class OrderResource {
                                                                  @PathVariable Long customerId
     ) {
         var pageResponse = orderService.findAllByCustomerId(customerId, PageRequest.of(page, size));
-        return ResponseEntity.ok(new ApiResponse<>(pageResponse.getContent(), PaginationResponse.from(pageResponse)));
+        var totalOnOrders = this.orderService.findAllInOrdersByCustomerId(customerId);
+        return ResponseEntity.ok(new ApiResponse<>(Map.of("totalOnOrders", totalOnOrders), pageResponse.getContent(), PaginationResponse.from(pageResponse)));
     }
 }
